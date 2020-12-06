@@ -66,17 +66,12 @@ namespace WatcherConverter
             if (WatcherChangeTypes.Created.Equals(e.ChangeType))
             {
                 FileInfo file = new FileInfo(e.FullPath);
-                int convertionResult = CommandLine.RunLibreOfficeConverter(file.FullName, file.DirectoryName);
+                DirectoryInfo outDir = new DirectoryInfo(file.DirectoryName
+                    + Path.DirectorySeparatorChar + "pdf");
+                int convertionResult = CommandLine.RunLibreOfficeConverter(file.FullName, outDir.FullName);
                 if (0 == convertionResult)
                 {
-                    Console.WriteLine($"File: {file.FullName} Converted");
-                    try
-                    {
-                        file.Delete();
-                    }
-                    catch (Exception)
-                    {                        
-                    }
+                    Console.WriteLine($"File: {file.FullName} Converted");                   
                     
                 }
             }

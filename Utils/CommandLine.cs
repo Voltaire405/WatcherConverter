@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace WatcherConverter.Utils
 {
@@ -9,7 +10,7 @@ namespace WatcherConverter.Utils
         {
             Process p = new Process();
             string processName = "soffice.exe";
-            string commandArgs = String.Format("--headless --convert-to {2} --outdir \"{1}\" \"{0}\"",
+            string commandArgs = string.Format("--headless --convert-to {2} --outdir \"{1}\" \"{0}\"",
                 target, outdir, convertTo);
             string libreOfficeDir = Environment.GetEnvironmentVariable("libreoffice");
 
@@ -21,9 +22,16 @@ namespace WatcherConverter.Utils
             p.StartInfo = s;
 
             s.WorkingDirectory = libreOfficeDir;
+            //verify outdir exist
+            DirectoryInfo directory = new DirectoryInfo(outdir);
+            if (!directory.Exists)
+            {
+                directory.Create();
+            }
+
             p.Start();
             p.WaitForExit();
-            //Console.WriteLine("Exit code: " + p.ExitCode);
+            
             GC.Collect();
             return p.ExitCode;
         }
